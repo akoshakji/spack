@@ -31,25 +31,26 @@ class Gsl(AutotoolsPackage, GNUMirrorPackage):
             archive_sha256='aa4173a68a5b4e82659304266419c318054bb88d4257d9e3bbb28eeb1724390e',
             sha256='41dc907c042631f810739c10058efc5b814b0e3907203c5b5d7292e3e35484bc',
             when="+external-cblas")
-   
+
     conflicts('+external-cblas', when="@:2.2.9999")
     depends_on('m4',       type='build', when='+external-cblas')
     depends_on('autoconf', type='build', when='+external-cblas')
     depends_on('automake', type='build', when='+external-cblas')
     depends_on('libtool',  type='build', when='+external-cblas')
     depends_on('blas', when='+external-cblas')
-    
+
     @property
     def force_autoreconf(self):
         # The external cblas patch touches configure
         return self.spec.satisfies('+external-cblas')
 
     def configure_args(self):
-        configure_args = [ ]
+        configure_args = []
         if self.spec.satisfies('+external-cblas'):
             configure_args.append('--with-external-cblas')
-            configure_args.append('CBLAS_CFLAGS=%s' % self.spec['blas'].headers.include_flags)
-            configure_args.append('CBLAS_LIBS=%s' % self.spec['blas'].libs.ld_flags)
+            configure_args.append('CBLAS_CFLAGS=%s'
+                                  % self.spec['blas'].headers.include_flags)
+            configure_args.append('CBLAS_LIBS=%s'
+                                  % self.spec['blas'].libs.ld_flags)
 
         return configure_args
-
